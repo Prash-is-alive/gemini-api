@@ -124,6 +124,7 @@ export default function Home() {
       question,
       correct_answer,
       incorrect_answers: [{array of other 3 incorrect answers}
+      explanation: {a one liner short explanation about the answer to this question}
       topic: {question related to which topic, if it is too long then make it short}
       ]
 
@@ -139,7 +140,7 @@ export default function Home() {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       const result = await model.generateContent(prompt);
-      const rawText = result.response.candidates[0].content.parts[0].text;
+      const rawText = result.response.text();
 
       const cleanedText = rawText
         .replace(/```json\n/g, "")
@@ -147,6 +148,7 @@ export default function Home() {
         .replace(/```/g, "");
 
       const parsedData = JSON.parse(cleanedText);
+      console.log(parsedData);
       const shuffledQuestions = shuffleArray(parsedData);
 
       const questionsWithShuffledOptions = shuffledQuestions.map((question) => {
@@ -320,7 +322,7 @@ export default function Home() {
 
       {showResults && (
         <div className="card p-4 shadow-sm mt-4">
-          <h2 className="text-center text-bg-primary rounded ">
+          <h2 className="text-center text-bg-primary rounded">
             Your Score: {score} out of {questions.length}
           </h2>
           <hr />
@@ -329,7 +331,7 @@ export default function Home() {
               <h5 className="card-title">
                 Q{index + 1}: {question.question}
               </h5>
-              <p className="text-muted">
+              <div className="text-muted mb-2">
                 <span className="badge rounded-pill text-bg-info text-wrap">
                   {question.category}
                 </span>{" "}
@@ -347,7 +349,13 @@ export default function Home() {
                 >
                   {question.difficulty}
                 </span>
-              </p>
+                <details>
+                  <summary className="badge rounded-pill text-bg-dark">
+                    Explanation
+                  </summary>
+                  <p>{question.explanation}</p>
+                </details>
+              </div>
               <ul className="list-unstyled">
                 {question.options.map((option, i) => (
                   <li
@@ -382,6 +390,13 @@ export default function Home() {
           <h2 className="text-center">
             Your Score: {score} out of {questions.length}
           </h2>
+          <button
+          className="btn btn-dark"
+          onClick={getResult}
+          disabled={loading || !selectedSubject || selectedModules.length === 0}
+        >
+          {loading ? "Loading..." : "Generate More Questions"}
+        </button>
         </div>
       )}
     </div>
