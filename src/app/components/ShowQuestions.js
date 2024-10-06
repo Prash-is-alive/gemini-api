@@ -1,5 +1,4 @@
-import React from "react";
-export function ShowQuestions({ index, handleAnswerChange,question }) {
+export function ShowQuestions({ index, handleAnswerChange, question }) {
   return (
     <div key={index} className="mb-4">
       <h5 className="card-title">

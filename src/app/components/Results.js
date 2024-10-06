@@ -1,4 +1,3 @@
-import React from "react";
 import CheckIcon from "./CheckIcon";
 import WrongIcon from "./WrongIcon";
 export function Results({
@@ -30,9 +29,9 @@ export function Results({
             </span>{" "}
             <span
               className={`badge rounded-pill text-bg-${
-                question.difficulty === "easy"
+                question.difficulty === "Easy"
                   ? "success"
-                  : question.difficulty === "medium"
+                  : question.difficulty === "Medium"
                   ? "warning"
                   : "danger"
               }  text-wrap`}
