@@ -269,7 +269,7 @@ export default function Home() {
           {questions.map((question, index) => (
             <ShowQuestions
               question={question}
-              index={index}
+              key={index}
               handleAnswerChange={handleAnswerChange}
             />
           ))}
