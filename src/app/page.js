@@ -109,7 +109,7 @@ export default function Home() {
     Generate multiple-choice questions (MCQs) based on the following modules, notes, and topics. Each question should include one correct answer and three incorrect answers. The output should be formatted as JSON, containing the following fields:
     [
       {
-        "type": "multiple" | "boolean", 
+        "type": "multiple" | "true or false", 
         "difficulty": "Easy" | "Medium" | "Hard", 
         "category": "{subject name}",
         "question": "{the question text}",
