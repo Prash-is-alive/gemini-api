@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import curriculumData from "./data/FinalYearBTechComputerEngineering.json";
@@ -270,6 +270,7 @@ export default function Home() {
             <ShowQuestions
               question={question}
               key={index}
+              index={index}
               handleAnswerChange={handleAnswerChange}
             />
           ))}
