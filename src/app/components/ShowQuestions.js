@@ -11,6 +11,11 @@ export function ShowQuestions({ index, handleAnswerChange, question }) {
         <span className="badge rounded-pill text-bg-primary text-wrap">
           {question?.topic}
         </span>{" "}
+        {question?.fromNotes && (
+          <span className="badge rounded-pill text-bg-secondary text-wrap">
+            Notes
+          </span>
+        )}{" "}
         <span
           className={`badge rounded-pill text-bg-${
             question?.difficulty === "Easy"

@@ -1,5 +1,5 @@
 {
-  "FinalYearBTechComputerEngineering": {
+  "CS": {
     "SemesterVII": {
       "courses": [
         {
@@ -1191,12 +1191,6 @@
               ]
             }
           ]
-        },
-        {
-          "code": "CSP801",
-          "name": "Major Project 2",
-          "credits": 6,
-          "modules": []
         }
       ]
     }

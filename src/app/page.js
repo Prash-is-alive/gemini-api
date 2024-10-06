@@ -1,7 +1,7 @@
 "use client";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import curriculumData from "./data/FinalYearBTechComputerEngineering.json";
+import curriculumData from "./data/curriculum.json";
 import { ShowQuestions } from "./components/ShowQuestions";
 import { Results } from "./components/Results";
 
@@ -26,30 +26,23 @@ export default function Home() {
   const [questions, setQuestions] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [userAnswers, setUserAnswers] = useState({});
-  const [isAllChecked, setIsAllChecked] = useState(false); // To track check/uncheck state
-
+  const [isAllChecked, setIsAllChecked] = useState(false); 
+  const [professorNotes, setProfessorNotes] = useState("");
   // Load semesters from the curriculum JSON on first render
   useEffect(() => {
-    const semesterList = Object.keys(
-      curriculumData.FinalYearBTechComputerEngineering
-    );
+    const semesterList = Object.keys(curriculumData.CS);
     setSemesters(semesterList);
   }, []);
 
   // Handle the semester selection and load its subjects
   const handleSemesterChange = (semester) => {
     setSelectedSemester(semester);
-    const subjectList = Object.keys(
-      curriculumData.FinalYearBTechComputerEngineering[semester].courses
-    ).map((subjectKey) => ({
-      name: curriculumData.FinalYearBTechComputerEngineering[semester].courses[
-        subjectKey
-      ].name,
-      modules:
-        curriculumData.FinalYearBTechComputerEngineering[semester].courses[
-          subjectKey
-        ].modules,
-    }));
+    const subjectList = Object.keys(curriculumData.CS[semester].courses).map(
+      (subjectKey) => ({
+        name: curriculumData.CS[semester].courses[subjectKey].name,
+        modules: curriculumData.CS[semester].courses[subjectKey].modules,
+      })
+    );
     setSubjects(subjectList);
     setSelectedSubject(""); // Clear selected subject
     setModules([]); // Clear modules
@@ -113,25 +106,29 @@ export default function Home() {
       .flatMap((mod) => mod.topics)
       .join(", ");
     const prompt = `
-      Generate multiple-choice questions (MCQs) based on the following modules and topics. 
-      Each question should have one correct answer and three incorrect answers. 
-      Provide the output in JSON format.
-      The JSON must contain 
-      [
-      type: "multiple or boolean",{if it is boolean then the options must be true or false or else 4 options out of which 1 is correct and 3 are incorrect}
-      difficulty: "Easy,"Medium" or "Hard", 
-      category: {add subject name here},
-      question,
-      correct_answer,
-      incorrect_answers: [{array of other 3 incorrect answers}
-      explanation: {a one liner short explanation about the answer to this question}
-      topic: {question related to which topic, if it is too long then make it short}
-      ]
+    Generate multiple-choice questions (MCQs) based on the following modules, notes, and topics. Each question should include one correct answer and three incorrect answers. The output should be formatted as JSON, containing the following fields:
+    [
+      {
+        "type": "multiple" | "boolean", 
+        "difficulty": "Easy" | "Medium" | "Hard", 
+        "category": "{subject name}",
+        "question": "{the question text}",
+        "correct_answer": "{the correct answer}",
+        "incorrect_answers": ["{incorrect answer 1}", "{incorrect answer 2}", "{incorrect answer 3}"],
+        "explanation": "{a brief explanation about the correct answer}",
+        "topic": "{a short topic description}",
+        "fromNotes": true | false
+      }
+    ]
+    Note: If the question is based on the professor's notes, set fromNotes to true. If the question does not relate to the notes or if the notes are irrelevant to the selected subjects or topics, set fromNotes to false.
+    Details:
 
-      Modules: ${selectedModules.map((mod) => mod.name).join(", ")}
-      Topics: ${selectedTopics}
-      Number of questions required: 10
+    Modules: ${selectedModules.map((mod) => mod.name).join(", ")}
+    Topics: ${selectedTopics}
+    Notes: {${professorNotes ? professorNotes : "No notes provided"}}
+    Number of questions required: 15
     `;
+    console.log(prompt);
     try {
       setLoading(true);
       setShowResults(false);
@@ -148,7 +145,7 @@ export default function Home() {
         .replace(/```/g, "");
 
       const parsedData = JSON.parse(cleanedText);
-      // console.log(parsedData);
+      console.log(parsedData);
       const shuffledQuestions = shuffleArray(parsedData);
 
       const questionsWithShuffledOptions = shuffledQuestions.map((question) => {
@@ -167,7 +164,7 @@ export default function Home() {
       setUserAnswers({});
       setLoading(false);
     }
-  }, [selectedModules]);
+  }, [selectedModules, professorNotes]);
 
   const handleAnswerChange = (index, answer) => {
     setUserAnswers((prevAnswers) => ({
@@ -191,6 +188,7 @@ export default function Home() {
       return;
     }
     setShowResults(true);
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -264,7 +262,20 @@ export default function Home() {
           ))}
         </div>
       )}
-
+      {/* Textarea for professor's notes */}
+      <div className="mb-4">
+        <label className="form-label">Add Notes:</label>
+        <textarea
+          className="form-control"
+          rows="3"
+          value={professorNotes}
+          onChange={(e) => setProfessorNotes(e.target.value)}
+          placeholder="Enter notes provided by your professor here..."
+        />
+        <small className="form-text text-muted">
+        (Optional)
+        </small>
+      </div>
       <div className="text-center mb-4">
         <button
           className="btn btn-dark"

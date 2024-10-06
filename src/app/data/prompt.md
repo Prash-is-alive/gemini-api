@@ -1,19 +1,22 @@
-const prompt = `
-      Generate multiple-choice questions (MCQs) based on the following modules and topics. 
-      Each question should have one correct answer and three incorrect answers. 
-      Provide the output in JSON format.
-      The JSON must contain 
-      [
-      type: "multiple or boolean",{if it is boolean then the options must be true or false or else 4 options out of which 1 is corrcet and 3 are incorrect}
-      difficulty: "Easy,"Medium" or "Hard", 
-      category: {add subject name here},
-      question,
-      correct_answer,
-      incorrect_answers: [{array of other 3 incorrect answers}
-      topic: {question related to which topic, if it is too long then make it short}
-      ]
+Generate multiple-choice questions (MCQs) based on the following modules, notes, and topics. Each question should include one correct answer and three incorrect answers. The output should be formatted as JSON, containing the following fields:
 
-      Modules: ${selectedModules.map((mod) => mod.name).join(", ")}
-      Topics: ${selectedTopics}
-      Number of questions required: 20
-    `;
+[
+  {
+    "type": "multiple" | "boolean", 
+    "difficulty": "Easy" | "Medium" | "Hard", 
+    "category": "{subject name}",
+    "question": "{the question text}",
+    "correct_answer": "{the correct answer}",
+    "incorrect_answers": ["{incorrect answer 1}", "{incorrect answer 2}", "{incorrect answer 3}"],
+    "explanation": "{a brief explanation about the correct answer}",
+    "topic": "{a short topic description}",
+    "fromNotes": true | false
+  }
+]
+Note: If the question is based on the professor's notes, set fromNotes to true. If the question does not relate to the notes or if the notes are irrelevant to the selected subjects or topics, set fromNotes to false.
+Details:
+
+Modules: ${selectedModules.map((mod) => mod.name).join(", ")}
+Topics: ${selectedTopics}
+Notes: ${professorNotes ? professorNotes : "No notes provided"}
+Number of questions required: 10
