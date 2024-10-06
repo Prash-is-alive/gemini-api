@@ -1,9 +1,9 @@
-"use client";
+'use client'
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import curriculumData from "./data/FinalYearBTechComputerEngineering.json";
-import CheckIcon from "./components/CheckIcon";
-import WrongIcon from "./components/WrongIcon";
+import { ShowQuestions } from "./components/ShowQuestions";
+import { Results } from "./components/Results";
 
 // Function to shuffle an array
 const shuffleArray = (array) => {
@@ -148,7 +148,7 @@ export default function Home() {
         .replace(/```/g, "");
 
       const parsedData = JSON.parse(cleanedText);
-      console.log(parsedData);
+      // console.log(parsedData);
       const shuffledQuestions = shuffleArray(parsedData);
 
       const questionsWithShuffledOptions = shuffledQuestions.map((question) => {
@@ -173,10 +173,6 @@ export default function Home() {
       ...prevAnswers,
       [index]: answer,
     }));
-  };
-
-  const handleSubmit = () => {
-    setShowResults(true);
   };
 
   const score = useMemo(() => {
@@ -271,49 +267,17 @@ export default function Home() {
       {questions.length > 0 && !showResults && !loading && (
         <div className="card p-4 shadow-sm">
           {questions.map((question, index) => (
-            <div key={index} className="mb-4">
-              <h5 className="card-title">
-                Q{index + 1}: {question.question}
-              </h5>
-              <p className="text-muted">
-                <span className="badge rounded-pill text-bg-info text-wrap">
-                  {question.category}
-                </span>{" "}
-                <span className="badge rounded-pill text-bg-primary text-wrap">
-                  {question.topic}
-                </span>{" "}
-                <span
-                  className={`badge rounded-pill text-bg-${
-                    question.difficulty === "Easy"
-                      ? "success"
-                      : question.difficulty === "Medium"
-                      ? "warning"
-                      : "danger"
-                  }  text-wrap`}
-                >
-                  {question.difficulty}
-                </span>
-              </p>
-              <ul className="list-unstyled">
-                {question.options.map((option, i) => (
-                  <li key={i} className="mb-2">
-                    <label className="form-check-label">
-                      <input
-                        className="form-check-input me-2"
-                        type="radio"
-                        name={`question-${index}`}
-                        value={option}
-                        onChange={() => handleAnswerChange(index, option)}
-                      />
-                      {option.toString()}
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ShowQuestions
+              question={question}
+              index={index}
+              handleAnswerChange={handleAnswerChange}
+            />
           ))}
           <div className="text-center">
-            <button className="btn btn-dark" onClick={handleSubmit}>
+            <button
+              className="btn btn-dark"
+              onClick={() => setShowResults(true)}
+            >
               Submit Answers
             </button>
           </div>
@@ -321,83 +285,15 @@ export default function Home() {
       )}
 
       {showResults && (
-        <div className="card p-4 shadow-sm mt-4">
-          <h2 className="text-center text-bg-primary rounded">
-            Your Score: {score} out of {questions.length}
-          </h2>
-          <hr />
-          {questions.map((question, index) => (
-            <div key={index} className="mb-4">
-              <h5 className="card-title">
-                Q{index + 1}: {question.question}
-              </h5>
-              <div className="text-muted mb-2">
-                <span className="badge rounded-pill text-bg-info text-wrap">
-                  {question.category}
-                </span>{" "}
-                <span className="badge rounded-pill text-bg-primary text-wrap">
-                  {question.topic}
-                </span>{" "}
-                <span
-                  className={`badge rounded-pill text-bg-${
-                    question.difficulty === "easy"
-                      ? "success"
-                      : question.difficulty === "medium"
-                      ? "warning"
-                      : "danger"
-                  }  text-wrap`}
-                >
-                  {question.difficulty}
-                </span>
-                <details>
-                  <summary className="badge rounded-pill text-bg-dark">
-                    Explanation
-                  </summary>
-                  <p>{question.explanation}</p>
-                </details>
-              </div>
-              <ul className="list-unstyled">
-                {question.options.map((option, i) => (
-                  <li
-                    key={i}
-                    className={`mb-2 ${
-                      option === question.correct_answer
-                        ? "text-success font-weight-bold"
-                        : ""
-                    } ${
-                      userAnswers[index] === option &&
-                      option !== question.correct_answer
-                        ? "text-danger font-weight-bold"
-                        : ""
-                    }`}
-                  >
-                    {option.toString()}{" "}
-                    {userAnswers[index] === option ? (
-                      option === question.correct_answer ? (
-                        <CheckIcon />
-                      ) : (
-                        <WrongIcon />
-                      )
-                    ) : (
-                      ""
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <hr />
-            </div>
-          ))}
-          <h2 className="text-center">
-            Your Score: {score} out of {questions.length}
-          </h2>
-          <button
-          className="btn btn-dark"
-          onClick={getResult}
-          disabled={loading || !selectedSubject || selectedModules.length === 0}
-        >
-          {loading ? "Loading..." : "Generate More Questions"}
-        </button>
-        </div>
+        <Results
+          score={score}
+          questions={questions}
+          userAnswers={userAnswers}
+          selectedModules={selectedModules}
+          getResult={getResult}
+          loading={loading}
+          selectedSubject={selectedSubject}
+        />
       )}
     </div>
   );
