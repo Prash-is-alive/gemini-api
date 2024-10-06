@@ -128,7 +128,7 @@ export default function Home() {
     Notes: {${professorNotes ? professorNotes : "No notes provided"}}
     Number of questions required: 15
     `;
-    console.log(prompt);
+    // console.log(prompt);
     try {
       setLoading(true);
       setShowResults(false);
@@ -145,7 +145,7 @@ export default function Home() {
         .replace(/```/g, "");
 
       const parsedData = JSON.parse(cleanedText);
-      console.log(parsedData);
+      // console.log(parsedData);
       const shuffledQuestions = shuffleArray(parsedData);
 
       const questionsWithShuffledOptions = shuffledQuestions.map((question) => {
