@@ -12,57 +12,55 @@ export function Results({
   return (
     <div className="card p-4 shadow-sm mt-4">
       <h2 className="text-center text-bg-primary rounded">
-        Your Score: {score} out of {questions.length}
+        Your Score: {score} out of {questions?.length}
       </h2>
       <hr />
       {questions.map((question, index) => (
         <div key={index} className="mb-4">
           <h5 className="card-title">
-            Q{index + 1}: {question.question}
+            Q{index + 1}: {question?.question}
           </h5>
           <div className="text-muted mb-2">
             <span className="badge rounded-pill text-bg-info text-wrap">
-              {question.category}
+              {question?.category}
             </span>{" "}
             <span className="badge rounded-pill text-bg-primary text-wrap">
-              {question.topic}
+              {question?.topic}
             </span>{" "}
             <span
               className={`badge rounded-pill text-bg-${
-                question.difficulty === "Easy"
+                question?.difficulty === "Easy"
                   ? "success"
-                  : question.difficulty === "Medium"
+                  : question?.difficulty === "Medium"
                   ? "warning"
                   : "danger"
               }  text-wrap`}
             >
-              {question.difficulty}
+              {question?.difficulty}
             </span>
             <details>
               <summary className="badge rounded-pill text-bg-dark">
                 Explanation
               </summary>
-              <p>{question.explanation}</p>
+              <p>{question?.explanation}</p>
             </details>
           </div>
           <ul className="list-unstyled">
-            {question.options.map((option, i) => (
+            {question?.options.map((option, i) => (
               <li
                 key={i}
                 className={`mb-2 ${
-                  option === question.correct_answer
-                    ? "text-success font-weight-bold"
-                    : ""
+                  option === question?.correct_answer ? "text-success" : ""
                 } ${
                   userAnswers[index] === option &&
-                  option !== question.correct_answer
-                    ? "text-danger font-weight-bold"
+                  option !== question?.correct_answer
+                    ? "text-danger"
                     : ""
                 }`}
               >
                 {option.toString()}{" "}
                 {userAnswers[index] === option ? (
-                  option === question.correct_answer ? (
+                  option === question?.correct_answer ? (
                     <CheckIcon />
                   ) : (
                     <WrongIcon />
@@ -77,7 +75,7 @@ export function Results({
         </div>
       ))}
       <h2 className="text-center">
-        Your Score: {score} out of {questions.length}
+        Your Score: {score} out of {questions?.length}
       </h2>
       <button
         className="btn btn-dark"

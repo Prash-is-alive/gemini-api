@@ -2,29 +2,29 @@ export function ShowQuestions({ index, handleAnswerChange, question }) {
   return (
     <div key={index} className="mb-4">
       <h5 className="card-title">
-        Q{index + 1}: {question.question}
+        Q{index + 1}: {question?.question}
       </h5>
       <p className="text-muted">
         <span className="badge rounded-pill text-bg-info text-wrap">
-          {question.category}
+          {question?.category}
         </span>{" "}
         <span className="badge rounded-pill text-bg-primary text-wrap">
-          {question.topic}
+          {question?.topic}
         </span>{" "}
         <span
           className={`badge rounded-pill text-bg-${
-            question.difficulty === "Easy"
+            question?.difficulty === "Easy"
               ? "success"
-              : question.difficulty === "Medium"
+              : question?.difficulty === "Medium"
               ? "warning"
               : "danger"
           }  text-wrap`}
         >
-          {question.difficulty}
+          {question?.difficulty}
         </span>
       </p>
       <ul className="list-unstyled">
-        {question.options.map((option, i) => (
+        {question?.options?.map((option, i) => (
           <li key={i} className="mb-2">
             <label className="form-check-label">
               <input
