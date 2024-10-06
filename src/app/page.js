@@ -164,6 +164,7 @@ export default function Home() {
       console.error("Error fetching questions:", error);
       alert("There was an error generating the quiz. Please try again.");
     } finally {
+      setUserAnswers({});
       setLoading(false);
     }
   }, [selectedModules]);
@@ -181,6 +182,16 @@ export default function Home() {
       (answer, index) => answer === correctAnswers[index]
     ).length;
   }, [userAnswers, questions]);
+
+  // Handle submission to show results
+  const handleSubmit = () => {
+    if (Object.keys(userAnswers).length !== questions.length) {
+      //alert user to answer all questions
+      alert("Please answer all the questions.");
+      return;
+    }
+    setShowResults(true);
+  };
 
   return (
     <div className="container my-5">
@@ -275,10 +286,7 @@ export default function Home() {
             />
           ))}
           <div className="text-center">
-            <button
-              className="btn btn-dark"
-              onClick={() => setShowResults(true)}
-            >
+            <button className="btn btn-dark" onClick={handleSubmit}>
               Submit Answers
             </button>
           </div>
